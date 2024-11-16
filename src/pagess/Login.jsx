@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login=() => {
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
     const [error, setError] = useState("")
     const [loginForm, setLoginForm] = useState({
         username :"",
@@ -41,7 +41,7 @@ const Login=() => {
                 }).then((response)=>{
                     console.log(response.data)
                     localStorage.setItem("userId", response.data.user.user_id)
-                    // Navigate("/users")
+                    navigate("/courses")
                 }).catch((error)=>{
                     setError(error.response.data.status)
                 });
