@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login=() => {
-    // const Navigate = useNavigate();
+    const Navigate = useNavigate();
     const [error, setError] = useState("")
     const [loginForm, setLoginForm] = useState({
         username :"",
@@ -35,12 +35,13 @@ const Login=() => {
                 data.append("username", loginForm.username)
                 data.append("password", loginForm.password)
 
-                axios.post("http://localhost/AI-Movie-Recommender/server-side/login.php",{
+                axios("http://localhost/AI-Movie-Recommender/server-side/login.php",{
+                    method:"POST",
                     data
                 }).then((response)=>{
                     console.log(response.data)
-                    localStorage.setItem("userId", response.data)
-                    // navigate("/jp")
+                    localStorage.setItem("userId", response.data.user.user_id)
+                    // Navigate("/users")
                 }).catch((error)=>{
                     setError(error.response.data.status)
                 });
