@@ -40,7 +40,7 @@ const Login=() => {
                     data
                 }).then((response)=>{
                     console.log(response.data)
-                    localStorage.setItem("userId", response.data.user.user_id)
+                    localStorage.setItem("user_id", response.data.user.user_id)
                     navigate("/courses")
                 }).catch((error)=>{
                     setError(error.response.data.status)

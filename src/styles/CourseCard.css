@@ -10,3 +10,9 @@
     padding: 10px;
     height:50px;
   }
+.course-allign{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
