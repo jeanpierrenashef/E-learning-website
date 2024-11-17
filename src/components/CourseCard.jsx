@@ -1,24 +1,21 @@
-import React from "react";
-import { useState } from "react";
-import "../styles/CourseCard.css"
+    import React from "react";
+    import { useNavigate } from "react-router-dom";
+    import "../styles/CourseCard.css";
 
-const CourseCard = ({arr}) => {
-    const {title, genre, release_year, details} = arr;
-    const [flag, setFlag] = useState(false);
+    const CourseCard = ({ movie }) => {
+    const navigate = useNavigate();
+    const { movie_id, title } = movie;
 
-    return(
-        <div className="course-card" onClick={()=>{
-            setFlag(!flag);
-        }}>
+    return (
+        <div
+        className="course-card"
+        onClick={() => {
+            navigate(`/courses/${title}`);
+        }}
+        >
         <h3>{title}</h3>
-        {flag && (
-            <>
-                <h6>{release_year}</h6>
-                <p>{genre}</p>
-                <p>{details}</p>
-            </>
-        )}
         </div>
-    )
-}
-export default CourseCard;
+    );
+    };
+
+    export default CourseCard;

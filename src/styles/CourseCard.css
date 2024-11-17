@@ -1,5 +1,6 @@
+
 .course-card {
-    width: 200px;
+    width: 90%;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -7,5 +8,5 @@
     justify-content: start;
     border: 1px solid grey;
     padding: 10px;
+    height:50px;
   }
-  

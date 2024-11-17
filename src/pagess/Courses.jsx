@@ -1,59 +1,34 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import CourseCard from '../components/CourseCard.jsx';
+    import React, { useEffect, useState } from "react";
+    import { useNavigate } from "react-router-dom";
+    import axios from "axios";
+    import CourseCard from "../components/CourseCard.jsx";
+    import "../styles/Courses.css";
 
+    const Courses = () => {
+    const navigate = useNavigate();
+    const [Courses, setCourses] = useState([]);
 
-const Courses = () => {
-const navigate = useNavigate();
+    const loadCourses = async () => {
+        const response = await axios.get(
+        "http://localhost/AI-Movie-Recommender/server-side/getAllMovies_TEST.php"
+        );
+        setCourses(response.data.movies);
+    };
 
-const [toggle, setToggle] = useState(false);
-const [Courses, setCourses] = useState([]);
+    useEffect(() => {
+        loadCourses();
+    }, []);
 
-const loadCourses = async () => {
-    const response = await axios.get(
-    "http://localhost/AI-Movie-Recommender/server-side/getAllMovies_TEST.php"
-    );
-
-    console.log(response.data);
-
-    setCourses(response.data.movies);
-};
-
-useEffect(() => {
-    loadCourses(); //so that the api isnt rendered everytime the page is rendered
-}, []);
-
-return (
-    <div>
+    return (
+        <div className="courses">
         <h1>Courses</h1>
-    {/* <button
-        onClick={() => {
-        navigate("/", {});
-        }}
-    >
-        Go to login
-    </button> */}
-        <button
-            onClick={() => {
-            setToggle(!toggle);
-            }}
-        >
-            {toggle.toString()}
-        </button>
-
         <div>
-            {Courses?.map((u) => (
-                <CourseCard arr={u} key={navigate.title} />
-            // <div key={u.id}>
-            //     <p>{u.username}</p>
-            //     <p>{u.password}</p>
-            //     <p>===============</p>
-            // </div>
+            {Courses.map((movie) => (
+                <CourseCard movie={movie} key={movie.title} />
             ))}
         </div>
-    </div>
-);
-};
+        </div>
+    );
+    };
 
-export default Courses;
+    export default Courses;
