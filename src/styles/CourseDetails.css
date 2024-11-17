@@ -1,0 +1,11 @@
+.course-details{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap:20px
+}
+
+.comment_section{
+    display: flex;
+    flex-direction: row;
+}
