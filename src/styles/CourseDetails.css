@@ -4,8 +4,17 @@
     flex-direction: column;
     gap:20px
 }
-
-.comment_section{
+.comment-section{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+}
+.comment-input{
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+}
+.comment-output{
+    display: flex;
+    flex-direction: column;
 }

@@ -10,6 +10,9 @@ const CourseDetails = () => {
     const user_id = localStorage.getItem("user_id");
     const [comment, setComment] = useState("");
     const [isEnrolled, setIsEnrolled] = useState(false);
+    const [readComments, setReadComments] = useState([]);
+    const [commentSubmitted, setCommentSubmitted] = useState(false)
+
     useEffect(()=>{
         console.log(comment)
     },[comment])
@@ -35,7 +38,7 @@ const CourseDetails = () => {
 
     useEffect(() => {
         loadMovieDetails();
-    }, [title]);
+    }, [movie_id, title]);
 
     
 
@@ -61,6 +64,24 @@ const CourseDetails = () => {
         loadEnrolled();
     },[movie_id])
 
+    const loadComments = () => {
+        const data = new FormData();
+        data.append("movie_id", movie_id);
+        axios("http://localhost/AI-Movie-Recommender/server-side/getCommentsPublic_TEST.php",{
+            method:"POST",
+            data:data
+        }).then((response)=>{
+
+            console.log(response.data.comments);
+            setReadComments(response.data.comments);
+        }).catch(()=>{
+            console.log("error loading comments")
+        })
+    }
+    useEffect(()=>{
+        loadComments();
+    },[movie_id, commentSubmitted])
+
 
     if (error) {
         return <p>Error loading movie details. Please try again later.</p>;
@@ -80,39 +101,54 @@ const CourseDetails = () => {
             {isEnrolled && (
                 <>
             <div className="comment-section">
-                <input type="text" placeholder="Comment" onChange={(e)=>{
-                    setComment(e.target.value)
-                }}/>
-                <button onClick={()=>{
-                    const data = new FormData();
-                    data.append("user_id", user_id);
-                    data.append("movie_id", movie_id);
-                    data.append("comment", comment);
+                <div className="comment-input">
+                    <input type="text" placeholder="Comment" value={comment} onChange={(e)=>{
+                        setComment(e.target.value)
+                    }}/>
+                    <button onClick={()=>{
+                        setCommentSubmitted(true);
+                        const data = new FormData();
+                        data.append("user_id", user_id);
+                        data.append("movie_id", movie_id);
+                        data.append("comment", comment);
 
-                    axios("http://localhost/AI-Movie-Recommender/server-side/addPublicComment_TEST.php",{
-                        method:"POST",
-                        data:data
-                    }).then((response)=>{
-                        console.log("public comment added")
-                    }).catch(()=>{
-                        console.log("posting public comment failed")
-                    })
-                }}>Public</button>
-                <button onClick={()=>{
-                    const data = new FormData();
-                    data.append("user_id", user_id);
-                    data.append("movie_id", movie_id);
-                    data.append("comment", comment);
+                        axios("http://localhost/AI-Movie-Recommender/server-side/addPublicComment_TEST.php",{
+                            method:"POST",
+                            data:data
+                        }).then((response)=>{
+                            console.log("public comment added")
+                            setCommentSubmitted(false);
+                            setComment("");
+                        }).catch(()=>{
+                            console.log("posting public comment failed")
+                        })
+                    }}>Public</button>
+                    <button onClick={()=>{
+                        setCommentSubmitted(true);
+                        const data = new FormData();
+                        data.append("user_id", user_id);
+                        data.append("movie_id", movie_id);
+                        data.append("comment", comment);
 
-                    axios("http://localhost/AI-Movie-Recommender/server-side/addPrivateComment_TEST.php",{
-                        method:"POST",
-                        data:data
-                    }).then((response)=>{
-                        console.log("private comment added")
-                    }).catch(()=>{
-                        console.log("posting private comment failed")
-                    })
-                }}>Private</button>
+                        axios("http://localhost/AI-Movie-Recommender/server-side/addPrivateComment_TEST.php",{
+                            method:"POST",
+                            data:data
+                        }).then((response)=>{
+                            console.log("private comment added")
+                            setCommentSubmitted(false);
+                            setComment("");
+                        }).catch(()=>{
+                            console.log("posting private comment failed")
+                        })
+                    }}>Private</button>
+                </div>
+                <div className="comment-output">
+                    { readComments?.map((e)=>(
+                        <div key={e.user_id}>
+                            <p>{e.username}:{e.comment}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
             </>
             )}

@@ -43,7 +43,8 @@ const Login=() => {
                     localStorage.setItem("user_id", response.data.user.user_id)
                     navigate("/courses")
                 }).catch((error)=>{
-                    setError(error.response.data.status)
+                    console.log("errpr logging in")
+                    //setError(error.response.data.status)
                 });
             }}>Login</button>
             {error && <p>{error}</p>}
