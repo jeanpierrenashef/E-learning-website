@@ -37,11 +37,17 @@ const Login=() => {
 
                 axios("http://localhost/AI-Movie-Recommender/server-side/login.php",{
                     method:"POST",
-                    data
+                    data:data,
                 }).then((response)=>{
                     console.log(response.data)
                     localStorage.setItem("user_id", response.data.user.user_id)
-                    navigate("/courses")
+                    if(response.data.user.user_type_id == 2){
+                        navigate("/courses")
+                    }else if (response.data.user.user_type_id == 3){
+                        navigate("/teacher");
+                    }else{
+                        navigate("/admin")
+                    }
                 }).catch((error)=>{
                     console.log("errpr logging in")
                     //setError(error.response.data.status)
