@@ -21,7 +21,7 @@ const CourseCard = ({ movie }) => {
             }).then(() => {
                 setToggle("Drop");
             }).catch(() => {
-                console.log("error bookmarking");
+                console.log("error dropping");
             });
         } else {
             await axios("http://localhost/AI-Movie-Recommender/server-side/unBookmark_TEST.php", {
@@ -30,7 +30,7 @@ const CourseCard = ({ movie }) => {
             }).then(() => {
                 setToggle("Enroll");
             }).catch(() => {
-                console.log("error unbookmarking");
+                console.log("error enrolling");
             });
         }
     };

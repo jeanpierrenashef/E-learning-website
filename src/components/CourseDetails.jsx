@@ -2,16 +2,18 @@
     import { useParams } from "react-router-dom";
     import axios from "axios";
     import "../styles/CourseDetails.css"
-
-    const CourseDetails = () => {
+    
+const CourseDetails = () => {
     const { title } = useParams(); 
-    const [movieDetails, setMovieDetails] = useState(null);
+    const [movieDetails, setMovieDetails] = useState([]);
     const [error, setError] = useState(false);
     const user_id = localStorage.getItem("user_id");
     const [comment, setComment] = useState("");
+    const [isEnrolled, setIsEnrolled] = useState(false);
     useEffect(()=>{
         console.log(comment)
     },[comment])
+    const { movie_id, genre, release_year, details } = movieDetails;
 
     const loadMovieDetails = () => {
         axios
@@ -35,6 +37,31 @@
         loadMovieDetails();
     }, [title]);
 
+    
+
+    const loadEnrolled = () => {
+        const data = new FormData();
+        data.append("user_id",user_id);
+        data.append("movie_id", movie_id);
+
+        axios("http://localhost/AI-Movie-Recommender/server-side/checkBookmark.php",{
+            method:"POST",
+            data:data
+        }).then((response)=>{
+            if(response.data.status === true){
+                setIsEnrolled(true);
+            }else{
+                setIsEnrolled(false);
+            }
+        }).catch(()=>{
+            console.log("error checking if enrolled")
+        })
+    }
+    useEffect(()=>{
+        loadEnrolled();
+    },[movie_id])
+
+
     if (error) {
         return <p>Error loading movie details. Please try again later.</p>;
     }
@@ -43,17 +70,18 @@
         return <p>Loading...</p>;
     }
 
-    const { movie_id, genre, release_year, details } = movieDetails;
-
+    
     return (
         <div className="course-details">
             <h2>{title}</h2>
             <h3>Genre: {genre}</h3>
             <h3>Release Year: {release_year}</h3>
             <p>{details}</p>
+            {isEnrolled && (
+                <>
             <div className="comment-section">
                 <input type="text" placeholder="Comment" onChange={(e)=>{
-                    setComment(e.target.validationMessage)
+                    setComment(e.target.value)
                 }}/>
                 <button onClick={()=>{
                     const data = new FormData();
@@ -86,6 +114,8 @@
                     })
                 }}>Private</button>
             </div>
+            </>
+            )}
         </div>
     );
     };
