@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Courses.css";
 import TeacherCourseCard from "../components/TeacherCourseCard";
+//import TeacherCourseDetails from "../components/TeacherCourseDetails";
 
 const Teachers = () => {
     const user_id = localStorage.getItem("user_id");
@@ -13,7 +14,7 @@ const Teachers = () => {
         const data = new FormData();
         data.append("user_id", user_id)
         axios(
-            "http://localhost/AI-Movie-Recommender/server-side/getMovieDetails_TEST.php",{
+            "http://localhost/AI-Movie-Recommender/server-side/getMovieDetailsTeacher_TEST.php",{
                 method:"POST",
                 data:data,
             }).then((response)=>{
@@ -27,17 +28,18 @@ const Teachers = () => {
     useEffect(()=>{
         loadCourses();
     },[])
+    console.log("Updated:", Courses);
     return(
         <div className="courses">
             <h1>Your Courses</h1>
             <div>
-                {Courses?.map((e)=>(
-                    <TeacherCourseCard movie={e} key={e.movie_id}/>
+                {Courses.map((movie) => (
+                    <TeacherCourseCard movie={movie} key={movie.title}/>
                 ))}
 
             </div>
 
         </div>
-    )
-}
+    );
+};
 export default Teachers;

@@ -26,6 +26,7 @@ const CourseDetails = () => {
         .then((response) => {
             if (response.data.response) {
             setMovieDetails(response.data.response);
+            console.log(response.data.response)
             } else {
             setError(true); 
             }
