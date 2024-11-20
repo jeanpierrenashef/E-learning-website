@@ -54,18 +54,19 @@ const Admin = () => {
 
     return (
         <div className="admin">
+            
             <div>
-                <h1>All Users</h1>
+                <h2>All Users</h2>
                 {users.map((u)=>(
                     <BanUserCard user={u} key={u.user_id} />
                 ))}
             </div>
             <div>
-                <h1>All Courses</h1>
+                <h2>All Courses</h2>
                 {courses.map((u)=>(
-                    <AdminCourseCard course={u} key={u.movie_id} />
+                    <AdminCourseCard course={u} key={u.movie_id} loadCourses={loadCourses}/>
                 ))}
-                <p>Add Course:</p>
+                <h4>Add Course:</h4>
                 <input
                     type="text"
                     placeholder="Add Course Name"

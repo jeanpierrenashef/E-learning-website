@@ -10,7 +10,7 @@ const BanUserCard = ({ user}) => {
         const data = new FormData();
         data.append("user_id", user_id);
         data.append("isBanned", banned === 1 ? 0 : 1); 
-        axios("http://localhost/AI-Movie-Recommender/server-side/toggleBanUser_TEST.php", {
+        axios("http://localhost/AI-Movie-Recommender/server-side/toggleBanUser.php", {
                 method: "POST",
                 data: data,
             }).then(()=>{
