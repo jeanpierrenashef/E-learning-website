@@ -28,13 +28,14 @@ const Teachers = () => {
     useEffect(()=>{
         loadCourses();
     },[])
+
     console.log("Updated:", Courses);
     return(
         <div className="courses">
             <h1>Your Courses</h1>
             <div>
-                {Courses.map((movie) => (
-                    <TeacherCourseCard movie={movie} key={movie.title}/>
+                {Courses.map((u) => (
+                    <TeacherCourseCard test={u} key={u.movie_id}/>
                 ))}
 
             </div>

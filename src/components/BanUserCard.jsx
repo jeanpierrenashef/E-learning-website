@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 
-const BanUserCard = ({ user, setUsers }) => {
+const BanUserCard = ({ user}) => {
     const { user_id, username, user_type, banned } = user;
     const [toggle, setToggle] = useState(banned === 1 ? "Unban" : "Ban");
 
