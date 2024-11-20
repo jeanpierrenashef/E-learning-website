@@ -34,9 +34,7 @@ const CourseCard = ({ movie }) => {
             });
         }
     };
-    useEffect(()=>{
-        handleToggle()
-    })
+
 
 
     return (
