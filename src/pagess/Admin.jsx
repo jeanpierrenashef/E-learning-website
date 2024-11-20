@@ -44,6 +44,8 @@ const Admin = () => {
             data:data
         }).then(()=>{
             console.log("added new course")
+            setAddCourse("");
+            loadCourses();
         }).catch(()=>{
             console.log("error adding course")
         })
