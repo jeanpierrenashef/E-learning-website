@@ -1,3 +1,9 @@
+.admin{
+    display: row;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
 .ban-section{
     display: flex;
     flex-direction: row;
