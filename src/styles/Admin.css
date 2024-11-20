@@ -45,3 +45,14 @@ button{
 input{
     height: 20px;
 }
+.assigning{
+    display: flex;
+    flex-direction: row;
+}
+.assigning > div{
+    display: flex;
+    flex-direction: row;
+}
+.option{
+    height: 20px    ;
+}

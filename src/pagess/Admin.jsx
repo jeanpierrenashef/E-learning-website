@@ -13,6 +13,9 @@ const Admin = () => {
         username:"",
         password:""
     })
+    const [loadInstructors, setLoadInstructors] = useState([])
+    const [selectInstructor, setSelectInstructor] = useState("");
+    const [selectCourse, setSelectCourse] = useState("");
 
     const loadAllUsers = () => {
         axios("http://localhost/AI-Movie-Recommender/server-side/getAllUsers_TEST.php",{
@@ -72,7 +75,36 @@ const Admin = () => {
         console.log("failed to add isntructor account")
     })}
 
+    const loadAllInstructors = () => {
+        axios("http://localhost/AI-Movie-Recommender/server-side/getAllInstructors_TEST.php",{
+                method: "GET",
+            }).then((response)=>{
+                setLoadInstructors(response.data.users);
+                
+            }).catch(()=>{
+                console.log("not fetching users correctly")
+            })
+        
+    }
+    useEffect(()=>{
+        loadAllInstructors()
+    },[])
 
+    const handleAssigning = (instructorId, courseId) => {
+        const data = new FormData();
+        data.append("user_id",instructorId);
+        data.append("movie_id", courseId);
+        axios("http://localhost/AI-Movie-Recommender/server-side/assignInstructorsToCourses_TEST.php",{
+            method:"POST",
+            data:data,
+        }).then((response)=>{
+            console.log(response)
+            setSelectCourse("");
+            setSelectInstructor("")
+        }).catch(()=>{
+            console.log("error assigning")
+        })
+    }
     return (
         <div className="admin">
             <div className="admin-display">
@@ -117,6 +149,39 @@ const Admin = () => {
                     }}>Add Instructor
                     </button>
                 </div>
+            </div>
+            <div className="assigning">
+                <div>
+                    <p>Assign Instructor: </p>
+                    <select value={selectInstructor} onChange={(e) => setSelectInstructor(e.target.value)}>
+                        <option value="">Select Instructor</option>
+                        {loadInstructors.map((u) => {
+                            return (
+                                <option key={u.user_id} value={u.user_id}>
+                                    {u.username}
+                                </option>
+                            );
+                        })}
+                    </select>
+                </div>
+                <div>
+                    <p>To courses: </p>
+                    <select value={selectCourse} onChange={(e)=>{
+                        setSelectCourse(e.target.value)
+                    }}>
+                        <option value="">Select Course</option>
+                        {courses.map((c)=>{
+                            return(
+                                <option key={c.movie_id} value={c.movie_id}>
+                                    {c.title}
+                                </option>
+                            )
+                        })}
+                    </select>
+                </div>
+                <button onClick={()=>{
+                    handleAssigning(selectInstructor,selectCourse)
+                }}>Assign Together</button>
             </div>
 
         </div>
