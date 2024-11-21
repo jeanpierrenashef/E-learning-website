@@ -11,6 +11,7 @@ const CourseDetails = () => {
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [readComments, setReadComments] = useState([]);
     const [commentSubmitted, setCommentSubmitted] = useState(false);
+
     const [assignments, setAssignments] = useState([]);
     const [assignmentFile, setAssignmentFile] = useState(null);
     const [uploadStatus, setUploadStatus] = useState("");
@@ -119,7 +120,7 @@ const CourseDetails = () => {
             data: data,
             headers: {
                 Authorization: localStorage.token,
-                "Content-Type": "multipart/form-data"
+                //"Content-Type": "multipart/form-data"
             }
         })
         .then(() => {
@@ -179,16 +180,16 @@ const CourseDetails = () => {
                 </div>
             </div>
 
-            <div className="assignments-section">
+            <div>
                 <h3>Assignments</h3>
-                {assignments.map((assignment) => (
-                    <div key={assignment.assignment_id} className="assignment-upload">
-                        <h4>{assignment.assignment_name}</h4>
+                {assignments.map((a) => (
+                    <div key={a.assignment_id}>
+                        <h4>{a.assignment_name}</h4>
                         <input
                             type="file"
                             onChange={handleFileUpload}
                         />
-                        <button onClick={() => submitAssignment(assignment.assignment_id)}>Upload</button>
+                        <button onClick={() => submitAssignment(a.assignment_id)}>Upload</button>
                     </div>
                 ))}
                 {uploadStatus && <p>{uploadStatus}</p>}
