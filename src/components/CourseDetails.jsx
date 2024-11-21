@@ -16,6 +16,8 @@ const CourseDetails = () => {
     const [assignmentFile, setAssignmentFile] = useState(null);
     const [uploadStatus, setUploadStatus] = useState("");
 
+    const [announcements, setAnnouncements] = useState([]);
+
     const { course_id, genre, release_year, details } = courseDetails;
 
     const loadCourseDetails = () => {
@@ -131,6 +133,22 @@ const CourseDetails = () => {
         });
     };
 
+    const loadAnnouncements = () => {
+        const data = new FormData();
+        data.append("course_id", course_id);
+        axios("http://localhost/server-side-e-learning/server-side/getAnnouncements.php", {
+            method: "POST",
+            data: data,
+        }).then((response) => {
+            setAnnouncements(response.data.announcements);
+        })
+        .catch(() => console.log("Error fetching announcements."));
+    };
+
+    useEffect(() => {
+        loadAnnouncements();
+    }, [course_id]);
+
     if (error) {
         return <p>Error loading course details. Please try again later.</p>;
     }
@@ -148,6 +166,16 @@ const CourseDetails = () => {
             <p>{details}</p>
             {isEnrolled && (
                 <>
+            <div>
+                <h2>Announcements</h2>
+                <div>
+                    {announcements.map((a) => (
+                        <div key={a.announcement_id}>
+                            <p>{a.announcement}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
             <div className="comment-section">
                 <div className="comment-input">
                     <input type="text" placeholder="Comment" value={comment} onChange={(e)=>{
