@@ -6,7 +6,7 @@
 .pnp.js
 # testing
 /coverage
-
+/e-learning-website
 # production
 /build
 
