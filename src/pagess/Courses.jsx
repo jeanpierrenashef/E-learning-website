@@ -13,9 +13,9 @@ const Courses = () => {
 
     const loadCourses = async () => {
         const response = await axios.get(
-        "http://localhost/AI-Movie-Recommender/server-side/getAllMovies_TEST.php"
+        "http://localhost/server-side-e-learning/server-side/getAllCourses.php"
         );
-        setCourses(response.data.movies);
+        setCourses(response.data.courses);
     };
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const Courses = () => {
         // data.append("user_id", user_id);
         try{
             const response = await axios.get(
-                "http://localhost/AI-Movie-Recommender/server-side/checkBookmark_TEST.php",{
+                "http://localhost/server-side-e-learning/server-side/checkEnroll.php",{
                     headers:{
                         Authorization: localStorage.token,
                     },
@@ -35,7 +35,7 @@ const Courses = () => {
                 }
             );
             setEnroll(response.data.users);
-            //console.log("test: ",response.data.users);
+
         }catch(error){
             console.log(error)
         }
@@ -47,7 +47,7 @@ const Courses = () => {
     const mergeEnrolledWithCourses = () => { //checks if the student enrolled in the courses that are displayed
         const updatedCourses = Courses.map((course) => {
         const isEnrolled = Enroll.some((enroll) =>
-            enroll.movie_id === course.movie_id);
+            enroll.course_id === course.course_id);
         return {
             ...course,
             isEnrolled,
@@ -64,8 +64,8 @@ const Courses = () => {
         <div className="courses">
             <h1>Courses</h1>
             <div>
-                {UpdatedInput.map((movie) => (
-                    <CourseCard movie={movie} key={movie.movie_id} />
+                {UpdatedInput.map((course) => (
+                    <CourseCard course={course} key={course.course_id} />
                 ))}
 
             </div>

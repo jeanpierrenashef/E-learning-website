@@ -5,29 +5,29 @@ import "../styles/CourseDetails.css"
 
 const TeacherCourseDetails = () =>{
     const {title} = useParams();
-    const [movieDetails, setMovieDetails] = useState([]);
+    const [courseDetails, setCourseDetails] = useState([]);
     const [enrolled, setEnrolled] = useState([]);
 
-    const { movie_id, genre, release_year, details } = movieDetails;
+    const { course_id, genre, release_year, details } = courseDetails;
 
-    const loadMovieDetails = () => {
+    const loadCourseDetails = () => {
         axios
         .get(
-            `http://localhost/AI-Movie-Recommender/server-side/getMovieDetails_TEST.php?title=${encodeURIComponent(title)}`
+            `http://localhost/server-side-e-learning/server-side/getCourseDetails.php?title=${encodeURIComponent(title)}`
         )
         .then((response) => {
-            setMovieDetails(response.data.response);
+            setCourseDetails(response.data.response);
         }).catch(() => {console.log("error")});
     };
     
     useEffect(() => {
-        loadMovieDetails();
+        loadCourseDetails();
     }, [title]);
     
     const getAllStudents = () => {
         const data = new FormData();
-        data.append("movie_id", movie_id);
-        axios("http://localhost/AI-Movie-Recommender/server-side/getAllStudents_TEST.php",{
+        data.append("course_id", course_id);
+        axios("http://localhost/server-side-e-learning/server-side/getAllStudents.php",{
             method: "POST",
             data:data,
         })//gets al the students wether enrolled or no
@@ -40,13 +40,34 @@ const TeacherCourseDetails = () =>{
     }
     useEffect(()=>{
         getAllStudents();
-    },[movie_id])
+    },[course_id])
 
+    const loadComments = () => {
+        const data = new FormData();
+        data.append("course_id", course_id);
+        axios
+            .post(
+                "http://localhost/server-side-e-learning/server-side/getAllComments.php",
+                data
+            )
+            .then((response) => {
+                setComments(response.data.comments);
+            })
+            .catch(() => {
+                console.log("Error fetching comments");
+            });
+    };
+
+    useEffect(() => {
+        if (course_id) {
+            loadComments();
+        }
+    }, [course_id]);
     if (error) {
-        return <p>Error loading movie details. Please try again later.</p>;
+        return <p>Error loading course details. Please try again later.</p>;
     }
 
-    if (!movieDetails) {
+    if (!courseDetails) {
         return <p>Loading...</p>;
     }
     return(
@@ -66,8 +87,8 @@ const TeacherCourseDetails = () =>{
                             <button onClick={()=>{
                                 const data = new FormData();
                                 data.append("user_id", u.user_id);
-                                data.append("movie_id", movie_id)
-                                axios("http://localhost/AI-Movie-Recommender/server-side/insertToBookmark_TEST.php",{
+                                data.append("course_id", course_id)
+                                axios("http://localhost/server-side-e-learning/server-side/insertToEnroll.php",{
                                     method:"POST",
                                     data:data,
                                 }).then(()=>{
@@ -85,6 +106,16 @@ const TeacherCourseDetails = () =>{
                     </div>
                     );
             })}
+            </div>
+            <h2>Comments:</h2>
+            <div className="comment-output">
+                {comments.map((c) => (
+                    <div key={c.user_id}>
+                        <p>
+                            {c.username}:{c.comment_type === 0 ? "Public" : "Private"}-----{c.comment}
+                        </p>
+                    </div>
+                ))}
             </div>
         </div>
     )

@@ -14,7 +14,7 @@ const Teachers = () => {
         const data = new FormData();
         //data.append("user_id", user_id)
         axios(
-            "http://localhost/AI-Movie-Recommender/server-side/getMovieDetailsTeacher_TEST.php",{
+            "http://localhost/server-side-e-learning/server-side/getCourseDetailsTeacher.php",{
                 method:"POST",
                 data:data,
                 headers:{

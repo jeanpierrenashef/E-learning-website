@@ -3,9 +3,9 @@ import { Form, useNavigate } from "react-router-dom";
 import "../styles/CourseCard.css";
 import axios from "axios";
 
-const CourseCard = ({ movie }) => {
+const CourseCard = ({ course }) => {
     const navigate = useNavigate();
-    const { movie_id, title, isEnrolled} = movie;
+    const { course_id, title, isEnrolled} = course;
     const [toggle, setToggle] = useState(isEnrolled ? "Drop" : "Enroll");
     //const user_id = localStorage.getItem("user_id");
 
@@ -15,12 +15,12 @@ const CourseCard = ({ movie }) => {
 
     const handleToggle = async () => {
         const data = new FormData();
-        data.append("movie_id", movie_id);
+        data.append("course_id", course_id);
 
         try {
             if (toggle === "Enroll") {
                 await axios({
-                    url: "http://localhost/AI-Movie-Recommender/server-side/insertToBookmark_TEST.php",
+                    url: "http://localhost/server-side-e-learning/server-side/insertToEnroll.php",
                     method: "POST",
                     data: data,
                     headers: {
@@ -30,7 +30,7 @@ const CourseCard = ({ movie }) => {
                 setToggle("Drop");
             } else {
                 await axios({
-                    url: "http://localhost/AI-Movie-Recommender/server-side/unBookmark_TEST.php",
+                    url: "http://localhost/server-side-e-learning/server-side/unEnroll.php",
                     method: "POST",
                     data: data,
                     headers: {

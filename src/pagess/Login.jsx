@@ -35,7 +35,7 @@ const Login=() => {
                 data.append("username", loginForm.username)
                 data.append("password", loginForm.password)
 
-                axios("http://localhost/AI-Movie-Recommender/server-side/login_TEST.php",{
+                axios("http://localhost/server-side-e-learning/server-side/login.php",{
                     method:"POST",
                     data:data
                 },{

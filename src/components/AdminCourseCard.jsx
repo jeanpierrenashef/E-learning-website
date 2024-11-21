@@ -3,17 +3,17 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const AdminCourseCard = ({course, loadCourses}) => {
-    const {movie_id, title} = course;
+    const {course_id, title} = course;
     //const [courseState, setCourseState] = useState([]);
-    //const [toggle, setToggle] = useState(movie_id ? "Remove" : "Add")
+    //const [toggle, setToggle] = useState(course_id ? "Remove" : "Add")
     const [isEditing, setIsEditing] = useState(false);
     const [newTitle, setNewTitle] = useState(title);
 
     const handleRemovingCourse = () => {
         const data = new FormData();
-        data.append("movie_id", movie_id);
+        data.append("course_id", course_id);
     
-            axios("http://localhost/AI-Movie-Recommender/server-side/deleteMovie_TEST.php", {
+            axios("http://localhost/server-side-e-learning/server-side/deleteCourse.php", {
                 method: "POST",
                 data: data,
             }).then(() => {
@@ -31,10 +31,10 @@ const AdminCourseCard = ({course, loadCourses}) => {
     
     const handleSaveEdit = () => {
         const data = new FormData();
-        data.append("movie_id", movie_id);
+        data.append("course_id", course_id);
         data.append("title", newTitle);
 
-        axios("http://localhost/AI-Movie-Recommender/server-side/updateMovieTitle_TEST.php", {
+        axios("http://localhost/server-side-e-learning/server-side/updateCourseTitle.php", {
             method: "POST",
             data: data,
         }).then(() => {
@@ -63,7 +63,7 @@ const AdminCourseCard = ({course, loadCourses}) => {
             ):(
                 <>
                 <p>
-                    {movie_id}: {title}
+                    {course_id}: {title}
                 </p>
                 <div>
                     <button onClick=

@@ -5,7 +5,7 @@
     
 const CourseDetails = () => {
     const { title } = useParams(); 
-    const [movieDetails, setMovieDetails] = useState([]);
+    const [courseDetails, setCourseDetails] = useState([]);
     const [error, setError] = useState(false);
     //const user_id = localStorage.getItem("user_id");
     const [comment, setComment] = useState("");
@@ -16,29 +16,29 @@ const CourseDetails = () => {
     // useEffect(()=>{
     //     console.log(comment)
     // },[comment])
-    const { movie_id, genre, release_year, details } = movieDetails;
+    const { course_id, genre, release_year, details } = courseDetails;
     ;
-    const loadMovieDetails = () => {
+    const loadCourseDetails = () => {
         axios
         .get(
-            `http://localhost/AI-Movie-Recommender/server-side/getMovieDetails_TEST.php?title=${encodeURIComponent(title)}`
+            `http://localhost/server-side-e-learning/server-side/getCourseDetails.php?title=${encodeURIComponent(title)}`
         )
         .then((response) => {
             if (response.data.response) {
-            setMovieDetails(response.data.response);
+            setCourseDetails(response.data.response);
             console.log(response.data.response)
             } else {
             setError(true); 
             }
         })
         .catch((err) => {
-            console.error("Error fetching movie details:", err.message);
+            console.error("Error fetching course details:", err.message);
             setError(true); 
         });
     };
 
     useEffect(() => {
-        loadMovieDetails();
+        loadCourseDetails();
     }, [title]);
 
     
@@ -46,9 +46,9 @@ const CourseDetails = () => {
     const loadEnrolled = () => {
         const data = new FormData();
         //data.append("user_id",user_id);
-        data.append("movie_id", movie_id);
+        data.append("course_id", course_id);
 
-        axios("http://localhost/AI-Movie-Recommender/server-side/checkifBookmark_TEST.php",{
+        axios("http://localhost/server-side-e-learning/server-side/checkifEnroll.php",{
             method:"POST",
             data:data,
             headers:{
@@ -65,15 +65,15 @@ const CourseDetails = () => {
         })
     }
     useEffect(() => {
-        if (movie_id) {
+        if (course_id) {
             loadEnrolled();
         }
-    }, [movie_id]);
+    }, [course_id]);
 
     const loadComments = () => {
         const data = new FormData();
-        data.append("movie_id", movie_id);
-        axios("http://localhost/AI-Movie-Recommender/server-side/getCommentsPublic_TEST.php",{
+        data.append("course_id", course_id);
+        axios("http://localhost/server-side-e-learning/server-side/getCommentsPublic.php",{
             method:"POST",
             data:data
         }).then((response)=>{
@@ -86,14 +86,14 @@ const CourseDetails = () => {
     }
     useEffect(()=>{
         loadComments();
-    },[movie_id, commentSubmitted])
+    },[course_id, commentSubmitted])
 
 
     if (error) {
-        return <p>Error loading movie details. Please try again later.</p>;
+        return <p>Error loading course details. Please try again later.</p>;
     }
 
-    if (!movieDetails) {
+    if (!courseDetails) {
         return <p>Loading...</p>;
     }
 
@@ -115,10 +115,10 @@ const CourseDetails = () => {
                         setCommentSubmitted(true);
                         const data = new FormData();
                         //data.append("user_id", user_id);
-                        data.append("movie_id", movie_id);
+                        data.append("course_id", course_id);
                         data.append("comment", comment);
 
-                        axios("http://localhost/AI-Movie-Recommender/server-side/addPublicComment_TEST.php",{
+                        axios("http://localhost/server-side-e-learning/server-side/addPublicComment.php",{
                             method:"POST",
                             data:data,
                             headers:{
@@ -136,10 +136,10 @@ const CourseDetails = () => {
                         setCommentSubmitted(true);
                         const data = new FormData();
                         //data.append("user_id", user_id);
-                        data.append("movie_id", movie_id);
+                        data.append("course_id", course_id);
                         data.append("comment", comment);
 
-                        axios("http://localhost/AI-Movie-Recommender/server-side/addPrivateComment_TEST.php",{
+                        axios("http://localhost/server-side-e-learning/server-side/addPrivateComment.php",{
                             method:"POST",
                             data:data,
                             headers:{

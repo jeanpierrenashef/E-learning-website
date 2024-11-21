@@ -35,7 +35,7 @@ const Signup=() => {
                 data.append("username", SignupForm.username)
                 data.append("password", SignupForm.password)
 
-                axios("http://localhost/AI-Movie-Recommender/server-side/signup.php",{
+                axios("http://localhost/server-side-e-learning/server-side/signup.php",{
                     method:"POST",
                     data:data
                 }).then((response)=>{

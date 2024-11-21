@@ -18,7 +18,7 @@ const Admin = () => {
     const [selectCourse, setSelectCourse] = useState("");
 
     const loadAllUsers = () => {
-        axios("http://localhost/AI-Movie-Recommender/server-side/getAllUsers_TEST.php",{
+        axios("http://localhost/server-side-e-learning/server-side/getAllUsers.php",{
                 method: "GET",
             }).then((response)=>{
                 setUsers(response.data.response);
@@ -34,9 +34,9 @@ const Admin = () => {
 
     const loadCourses = async () => {
         const response = await axios.get(
-        "http://localhost/AI-Movie-Recommender/server-side/getAllMovies_TEST.php"
+        "http://localhost/server-side-e-learning/server-side/getAllCourses.php"
         );
-        setCourses(response.data.movies);
+        setCourses(response.data.courses);
     };
 
     useEffect(() => {
@@ -46,7 +46,7 @@ const Admin = () => {
     const handleAddingCourse = (title) => {
         const data = new FormData();
         data.append("title", title);
-        axios("http://localhost/AI-Movie-Recommender/server-side/addMovie_TEST.php",{
+        axios("http://localhost/server-side-e-learning/server-side/addCourse.php",{
             method:"POST",
             data:data
         }).then(()=>{
@@ -62,7 +62,7 @@ const Admin = () => {
         const data = new FormData();
         data.append("username", instructorsName.username);
         data.append("password", instructorsName.password)
-        axios("http://localhost/AI-Movie-Recommender/server-side/addInstructors_TEST.php",{
+        axios("http://localhost/server-side-e-learning/server-side/addInstructors.php",{
             method:"POST",
             data:data
     }).then(()=>{
@@ -76,7 +76,7 @@ const Admin = () => {
     })}
 
     const loadAllInstructors = () => {
-        axios("http://localhost/AI-Movie-Recommender/server-side/getAllInstructors_TEST.php",{
+        axios("http://localhost/server-side-e-learning/server-side/getAllInstructors.php",{
                 method: "GET",
             }).then((response)=>{
                 setLoadInstructors(response.data.users);
@@ -93,8 +93,8 @@ const Admin = () => {
     const handleAssigning = (instructorId, courseId) => {
         const data = new FormData();
         data.append("user_id",instructorId);
-        data.append("movie_id", courseId);
-        axios("http://localhost/AI-Movie-Recommender/server-side/assignInstructorsToCourses_TEST.php",{
+        data.append("course_id", courseId);
+        axios("http://localhost/server-side-e-learning/server-side/assignInstructorsToCourses.php",{
             method:"POST",
             data:data,
         }).then((response)=>{
@@ -117,7 +117,7 @@ const Admin = () => {
                 <div>
                     <h2>All Courses</h2>
                     {courses.map((u)=>(
-                        <AdminCourseCard course={u} key={u.movie_id} loadCourses={loadCourses}/>
+                        <AdminCourseCard course={u} key={u.course_id} loadCourses={loadCourses}/>
                     ))}
                     <h4>Add Course:</h4>
                     <input
@@ -172,7 +172,7 @@ const Admin = () => {
                         <option value="">Select Course</option>
                         {courses.map((c)=>{
                             return(
-                                <option key={c.movie_id} value={c.movie_id}>
+                                <option key={c.course_id} value={c.course_id}>
                                     {c.title}
                                 </option>
                             )

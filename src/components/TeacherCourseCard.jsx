@@ -5,7 +5,7 @@ import axios from "axios";
 
 const TeacherCourseCard = ({ test }) =>{
     const navigate = useNavigate();
-    const { title} = test; 
+    const { title } = test; 
     //const user_id = localStorage.getItem("user_id");
     return(
         <div className="course-card">
