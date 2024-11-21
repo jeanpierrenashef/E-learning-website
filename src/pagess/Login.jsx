@@ -35,12 +35,16 @@ const Login=() => {
                 data.append("username", loginForm.username)
                 data.append("password", loginForm.password)
 
-                axios("http://localhost/AI-Movie-Recommender/server-side/login.php",{
+                axios("http://localhost/AI-Movie-Recommender/server-side/login_TEST.php",{
                     method:"POST",
-                    data:data,
+                    data:data
+                },{
+                    headers:{
+                        "Content-Type" : "application/json",
+                    },
                 }).then((response)=>{
                     console.log(response.data)
-                    localStorage.setItem("user_id", response.data.user.user_id)
+                    localStorage.setItem("token", response.data.jwt)
                     if(response.data.user.user_type_id == 2){
                         navigate("/courses")
                     }else if (response.data.user.user_type_id == 3){

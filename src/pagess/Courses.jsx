@@ -5,11 +5,11 @@ import CourseCard from "../components/CourseCard.jsx";
 import "../styles/Courses.css";
 
 const Courses = () => {
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const [Courses, setCourses] = useState([]);
     const [Enroll, setEnroll] = useState([]);
     const [UpdatedInput, setUpdatedInput] = useState([]);
-    const user_id = localStorage.getItem("user_id");
+    //const user_id = localStorage.getItem("user_id");
 
     const loadCourses = async () => {
         const response = await axios.get(
@@ -23,17 +23,22 @@ const Courses = () => {
     }, []);
 
     const isEnrolled = async () => {
-        const data = new FormData();
-        data.append("user_id", user_id);
-
-        const response = await axios(
-            "http://localhost/AI-Movie-Recommender/server-side/checkBookmark_TEST.php",{
-                method:"POST",
-                data:data,
-            }
-        )
-        setEnroll(response.data.users);
-        //console.log(response.data.users);
+        // const data = new FormData();
+        // data.append("user_id", user_id);
+        try{
+            const response = await axios.get(
+                "http://localhost/AI-Movie-Recommender/server-side/checkBookmark_TEST.php",{
+                    headers:{
+                        Authorization: localStorage.token,
+                    },
+                    //data:data,
+                }
+            );
+            setEnroll(response.data.users);
+            //console.log("test: ",response.data.users);
+        }catch(error){
+            console.log(error)
+        }
     }
     useEffect(() => {
         isEnrolled();
@@ -53,7 +58,7 @@ const Courses = () => {
     useEffect(()=>{
         mergeEnrolledWithCourses()
     },[Courses, Enroll])
-
+    console.log("Enrolled: ", Enroll)
     console.log("Updated Courses:", UpdatedInput);
     return (
         <div className="courses">

@@ -7,33 +7,43 @@ const CourseCard = ({ movie }) => {
     const navigate = useNavigate();
     const { movie_id, title, isEnrolled} = movie;
     const [toggle, setToggle] = useState(isEnrolled ? "Drop" : "Enroll");
-    const user_id = localStorage.getItem("user_id");
+    //const user_id = localStorage.getItem("user_id");
+
+    useEffect(() => {
+        setToggle(isEnrolled ? "Drop" : "Enroll");
+    }, [isEnrolled]);
 
     const handleToggle = async () => {
         const data = new FormData();
-        data.append("user_id", user_id);
         data.append("movie_id", movie_id);
 
-        if (toggle === "Enroll") {
-            await axios("http://localhost/AI-Movie-Recommender/server-side/insertToBookmark_TEST.php", {
-                method: "POST",
-                data: data,
-            }).then(() => {
+        try {
+            if (toggle === "Enroll") {
+                await axios({
+                    url: "http://localhost/AI-Movie-Recommender/server-side/insertToBookmark_TEST.php",
+                    method: "POST",
+                    data: data,
+                    headers: {
+                        Authorization: localStorage.token, 
+                    },
+                });
                 setToggle("Drop");
-            }).catch(() => {
-                console.log("error dropping");
-            });
-        } else {
-            await axios("http://localhost/AI-Movie-Recommender/server-side/unBookmark_TEST.php", {
-                method: "POST",
-                data: data,
-            }).then(() => {
+            } else {
+                await axios({
+                    url: "http://localhost/AI-Movie-Recommender/server-side/unBookmark_TEST.php",
+                    method: "POST",
+                    data: data,
+                    headers: {
+                        Authorization: localStorage.token, 
+                    },
+                });
                 setToggle("Enroll");
-            }).catch(() => {
-                console.log("error enrolling");
-            });
+            }
+        } catch (error) {
+            console.error("Error toggling enrollment:", error);
         }
     };
+
 
 
 

@@ -7,17 +7,17 @@ const CourseDetails = () => {
     const { title } = useParams(); 
     const [movieDetails, setMovieDetails] = useState([]);
     const [error, setError] = useState(false);
-    const user_id = localStorage.getItem("user_id");
+    //const user_id = localStorage.getItem("user_id");
     const [comment, setComment] = useState("");
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [readComments, setReadComments] = useState([]);
     const [commentSubmitted, setCommentSubmitted] = useState(false)
 
-    useEffect(()=>{
-        console.log(comment)
-    },[comment])
+    // useEffect(()=>{
+    //     console.log(comment)
+    // },[comment])
     const { movie_id, genre, release_year, details } = movieDetails;
-
+    ;
     const loadMovieDetails = () => {
         axios
         .get(
@@ -39,18 +39,21 @@ const CourseDetails = () => {
 
     useEffect(() => {
         loadMovieDetails();
-    }, [movie_id, title]);
+    }, [title]);
 
     
 
     const loadEnrolled = () => {
         const data = new FormData();
-        data.append("user_id",user_id);
+        //data.append("user_id",user_id);
         data.append("movie_id", movie_id);
 
-        axios("http://localhost/AI-Movie-Recommender/server-side/checkBookmark.php",{
+        axios("http://localhost/AI-Movie-Recommender/server-side/checkifBookmark_TEST.php",{
             method:"POST",
-            data:data
+            data:data,
+            headers:{
+                Authorization: localStorage.token
+            }
         }).then((response)=>{
             if(response.data.status === true){
                 setIsEnrolled(true);
@@ -61,9 +64,11 @@ const CourseDetails = () => {
             console.log("error checking if enrolled")
         })
     }
-    useEffect(()=>{
-        loadEnrolled();
-    },[movie_id])
+    useEffect(() => {
+        if (movie_id) {
+            loadEnrolled();
+        }
+    }, [movie_id]);
 
     const loadComments = () => {
         const data = new FormData();
@@ -92,7 +97,7 @@ const CourseDetails = () => {
         return <p>Loading...</p>;
     }
 
-    
+    console.log(isEnrolled)
     return (
         <div className="course-details">
             <h2>{title}</h2>
@@ -109,13 +114,16 @@ const CourseDetails = () => {
                     <button onClick={()=>{
                         setCommentSubmitted(true);
                         const data = new FormData();
-                        data.append("user_id", user_id);
+                        //data.append("user_id", user_id);
                         data.append("movie_id", movie_id);
                         data.append("comment", comment);
 
                         axios("http://localhost/AI-Movie-Recommender/server-side/addPublicComment_TEST.php",{
                             method:"POST",
-                            data:data
+                            data:data,
+                            headers:{
+                                Authorization: localStorage.token
+                            }
                         }).then((response)=>{
                             console.log("public comment added")
                             setCommentSubmitted(false);
@@ -127,13 +135,16 @@ const CourseDetails = () => {
                     <button onClick={()=>{
                         setCommentSubmitted(true);
                         const data = new FormData();
-                        data.append("user_id", user_id);
+                        //data.append("user_id", user_id);
                         data.append("movie_id", movie_id);
                         data.append("comment", comment);
 
                         axios("http://localhost/AI-Movie-Recommender/server-side/addPrivateComment_TEST.php",{
                             method:"POST",
-                            data:data
+                            data:data,
+                            headers:{
+                                Authorization: localStorage.token
+                            }
                         }).then((response)=>{
                             console.log("private comment added")
                             setCommentSubmitted(false);
