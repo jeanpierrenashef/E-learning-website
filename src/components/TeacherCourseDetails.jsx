@@ -22,10 +22,15 @@ const TeacherCourseDetails = () =>{
     
     useEffect(() => {
         loadMovieDetails();
-    }, [movie_id, title]);
+    }, [title]);
     
     const getAllStudents = () => {
-        axios.get("http://localhost/AI-Movie-Recommender/server-side/getAllEnrolledStudents_TEST.php")
+        const data = new FormData();
+        data.append("movie_id", movie_id);
+        axios("http://localhost/AI-Movie-Recommender/server-side/getAllStudents_TEST.php",{
+            method: "POST",
+            data:data,
+        })//gets al the students wether enrolled or no
         .then((response)=>{
             setEnrolled(response.data.users)
             console.log(response.data.users)
@@ -35,7 +40,7 @@ const TeacherCourseDetails = () =>{
     }
     useEffect(()=>{
         getAllStudents();
-    },[])
+    },[movie_id])
 
     if (error) {
         return <p>Error loading movie details. Please try again later.</p>;
@@ -53,22 +58,20 @@ const TeacherCourseDetails = () =>{
             <h2>Students Enrolled:</h2>
             <div>
                 {enrolled?.map((u)=>{
-                    const isEnrolled = u.movie_id === movie_id;
-                    let isInvited = false;
-                    if (isEnrolled) {isInvited=false}
-                    else {isInvited=true}
+                    const isEnrolled = u.enrollment_status === "Enrolled";
+                    return(
                     <div key={u.user_id} className="student-enroll">
-                        <p>{u.user_id}:{u.username}</p>
-                        {!isEnrolled && !isInvited && (
+                        <p>{u.user_id}:{u.username} ---- {isEnrolled ? "Enrolled" : "Not Enrolled"}</p>
+                        {!isEnrolled &&  (
                             <button onClick={()=>{
                                 const data = new FormData();
-                                data.append("user_id", user_id);
+                                data.append("user_id", u.user_id);
                                 data.append("movie_id", movie_id)
                                 axios("http://localhost/AI-Movie-Recommender/server-side/insertToBookmark_TEST.php",{
                                     method:"POST",
                                     data:data,
                                 }).then(()=>{
-                                    isEnrolled=true;
+                                    getAllStudents(); //REFRESH
                                     console.log("invited",u.user_id, "to course")
                                 }).catch(()=>{
                                     console.log("failed to invite")
@@ -80,6 +83,7 @@ const TeacherCourseDetails = () =>{
                         )}
                         
                     </div>
+                    );
             })}
             </div>
         </div>

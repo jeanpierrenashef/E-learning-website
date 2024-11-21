@@ -7,16 +7,19 @@ import TeacherCourseCard from "../components/TeacherCourseCard";
 //import TeacherCourseDetails from "../components/TeacherCourseDetails";
 
 const Teachers = () => {
-    const user_id = localStorage.getItem("user_id");
+    //const user_id = localStorage.getItem("user_id");
     const [Courses, setCourses] = useState([])
 
     const loadCourses = () => {
         const data = new FormData();
-        data.append("user_id", user_id)
+        //data.append("user_id", user_id)
         axios(
             "http://localhost/AI-Movie-Recommender/server-side/getMovieDetailsTeacher_TEST.php",{
                 method:"POST",
                 data:data,
+                headers:{
+                    Authorization: localStorage.token,
+                }
             }).then((response)=>{
                 console.log(response.data.response)
                 setCourses(response.data.response)
