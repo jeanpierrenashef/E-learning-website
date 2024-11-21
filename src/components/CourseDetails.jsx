@@ -1,23 +1,22 @@
-    import React, { useState, useEffect } from "react";
-    import { useParams } from "react-router-dom";
-    import axios from "axios";
-    import "../styles/CourseDetails.css"
-    
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import "../styles/CourseDetails.css"
+
 const CourseDetails = () => {
     const { title } = useParams(); 
     const [courseDetails, setCourseDetails] = useState([]);
     const [error, setError] = useState(false);
-    //const user_id = localStorage.getItem("user_id");
     const [comment, setComment] = useState("");
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [readComments, setReadComments] = useState([]);
-    const [commentSubmitted, setCommentSubmitted] = useState(false)
+    const [commentSubmitted, setCommentSubmitted] = useState(false);
+    const [assignments, setAssignments] = useState([]);
+    const [assignmentFile, setAssignmentFile] = useState(null);
+    const [uploadStatus, setUploadStatus] = useState("");
 
-    // useEffect(()=>{
-    //     console.log(comment)
-    // },[comment])
     const { course_id, genre, release_year, details } = courseDetails;
-    ;
+
     const loadCourseDetails = () => {
         axios
         .get(
@@ -41,11 +40,26 @@ const CourseDetails = () => {
         loadCourseDetails();
     }, [title]);
 
-    
+    const loadAssignments = () => {
+        const data = new FormData();
+        data.append("course_id",course_id)
+        axios(`http://localhost/server-side-e-learning/server-side/getAssignments.php`,{
+            method:"POST",
+            data:data,
+        })
+        .then((response) => {
+            setAssignments(response.data.assignments);
+            //console.log(response.data.assignments)
+        })
+        .catch(() => console.log("Error fetching assignments."));
+    };
+
+    useEffect(() => {
+        loadAssignments();
+    }, [course_id]);
 
     const loadEnrolled = () => {
         const data = new FormData();
-        //data.append("user_id",user_id);
         data.append("course_id", course_id);
 
         axios("http://localhost/server-side-e-learning/server-side/checkifEnroll.php",{
@@ -60,10 +74,9 @@ const CourseDetails = () => {
             }else{
                 setIsEnrolled(false);
             }
-        }).catch(()=>{
-            console.log("error checking if enrolled")
-        })
+        }).catch(()=>console.log("error checking if enrolled"))
     }
+
     useEffect(() => {
         if (course_id) {
             loadEnrolled();
@@ -77,17 +90,45 @@ const CourseDetails = () => {
             method:"POST",
             data:data
         }).then((response)=>{
-
             console.log(response.data.comments);
             setReadComments(response.data.comments);
-        }).catch(()=>{
-            console.log("error loading comments")
-        })
+        }).catch(()=>console.log("error loading comments"))
     }
+
     useEffect(()=>{
         loadComments();
     },[course_id, commentSubmitted])
 
+    const handleFileUpload = (e) => {
+        setAssignmentFile(e.target.files[0]);
+    };
+
+    const submitAssignment = (assignmentId) => {
+        if (!assignmentFile) {
+            setUploadStatus("Please select a file to upload.");
+            return;
+        }
+
+        const data = new FormData();
+        data.append("file", assignmentFile);
+        data.append("course_id", course_id);
+        data.append("assignment_id", assignmentId);
+
+        axios("http://localhost/server-side-e-learning/server-side/submitAssignment.php", {
+            method: "POST",
+            data: data,
+            headers: {
+                Authorization: localStorage.token,
+                "Content-Type": "multipart/form-data"
+            }
+        })
+        .then(() => {
+            setUploadStatus("File uploaded successfully!");
+        })
+        .catch(() => {
+            setUploadStatus("Error uploading file.");
+        });
+    };
 
     if (error) {
         return <p>Error loading course details. Please try again later.</p>;
@@ -114,7 +155,6 @@ const CourseDetails = () => {
                     <button onClick={()=>{
                         setCommentSubmitted(true);
                         const data = new FormData();
-                        //data.append("user_id", user_id);
                         data.append("course_id", course_id);
                         data.append("comment", comment);
 
@@ -124,35 +164,11 @@ const CourseDetails = () => {
                             headers:{
                                 Authorization: localStorage.token
                             }
-                        }).then((response)=>{
-                            console.log("public comment added")
+                        }).then(()=>{
                             setCommentSubmitted(false);
                             setComment("");
-                        }).catch(()=>{
-                            console.log("posting public comment failed")
-                        })
+                        }).catch(()=>console.log("posting public comment failed"))
                     }}>Public</button>
-                    <button onClick={()=>{
-                        setCommentSubmitted(true);
-                        const data = new FormData();
-                        //data.append("user_id", user_id);
-                        data.append("course_id", course_id);
-                        data.append("comment", comment);
-
-                        axios("http://localhost/server-side-e-learning/server-side/addPrivateComment.php",{
-                            method:"POST",
-                            data:data,
-                            headers:{
-                                Authorization: localStorage.token
-                            }
-                        }).then((response)=>{
-                            console.log("private comment added")
-                            setCommentSubmitted(false);
-                            setComment("");
-                        }).catch(()=>{
-                            console.log("posting private comment failed")
-                        })
-                    }}>Private</button>
                 </div>
                 <div className="comment-output">
                     { readComments?.map((e)=>(
@@ -162,10 +178,26 @@ const CourseDetails = () => {
                     ))}
                 </div>
             </div>
+
+            <div className="assignments-section">
+                <h3>Assignments</h3>
+                {assignments.map((assignment) => (
+                    <div key={assignment.assignment_id} className="assignment-upload">
+                        <h4>{assignment.assignment_name}</h4>
+                        <input
+                            type="file"
+                            onChange={handleFileUpload}
+                        />
+                        <button onClick={() => submitAssignment(assignment.assignment_id)}>Upload</button>
+                    </div>
+                ))}
+                {uploadStatus && <p>{uploadStatus}</p>}
+            </div>
+
             </>
             )}
         </div>
     );
-    };
+};
 
-    export default CourseDetails;
+export default CourseDetails;
