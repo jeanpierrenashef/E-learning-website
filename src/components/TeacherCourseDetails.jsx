@@ -9,6 +9,7 @@ const TeacherCourseDetails = () =>{
     const [enrolled, setEnrolled] = useState([]);
 
     const [assignment, setAssignment] = useState("");
+    const [announcement, setAnnouncement] = useState("");
 
     const { course_id, genre, release_year, details } = courseDetails;
 
@@ -139,6 +140,28 @@ const TeacherCourseDetails = () =>{
                     });
                 }}>
                     Assign
+                </button>
+            </div>
+            <h2>Set an Announcement</h2>
+            <div>
+                <input type="text" placeholder="Announcement" value={announcement} 
+                    onChange={(e) => setAnnouncement(e.target.value)} 
+                />
+                <button onClick={() => {
+                    const data = new FormData();
+                    data.append("course_id", course_id);
+                    data.append("announcement", announcement);
+                    axios("http://localhost/server-side-e-learning/server-side/insertAnnouncement.php", {
+                        method: "POST",
+                        data: data,
+                    }).then(() => {
+                        console.log("Announcement added");
+                        setAnnouncement(""); 
+                    }).catch(() => {
+                        console.log("Error adding announcement");
+                    });
+                }}>
+                    Announce
                 </button>
             </div>
         </div>
