@@ -8,6 +8,8 @@ const TeacherCourseDetails = () =>{
     const [courseDetails, setCourseDetails] = useState([]);
     const [enrolled, setEnrolled] = useState([]);
 
+    const [assignment, setAssignment] = useState("");
+
     const { course_id, genre, release_year, details } = courseDetails;
 
     const loadCourseDetails = () => {
@@ -92,7 +94,7 @@ const TeacherCourseDetails = () =>{
                                     method:"POST",
                                     data:data,
                                 }).then(()=>{
-                                    getAllStudents(); //REFRESH
+                                    getAllStudents();
                                     console.log("invited",u.user_id, "to course")
                                 }).catch(()=>{
                                     console.log("failed to invite")
@@ -116,6 +118,28 @@ const TeacherCourseDetails = () =>{
                         </p>
                     </div>
                 ))}
+            </div>
+            <h2>Assign an Assignment:</h2>
+            <div>
+                <input type="text" placeholder="Assignment name" value={assignment} 
+                    onChange={(e) => setAssignment(e.target.value)} 
+                />
+                <button onClick={() => {
+                    const data = new FormData();
+                    data.append("course_id", course_id);
+                    data.append("assignment_name", assignment);
+                    axios("http://localhost/server-side-e-learning/server-side/insertAssignment.php", {
+                        method: "POST",
+                        data: data,
+                    }).then(() => {
+                        console.log("Assignment added");
+                        setAssignment(""); 
+                    }).catch(() => {
+                        console.log("Error adding assignment");
+                    });
+                }}>
+                    Assign
+                </button>
             </div>
         </div>
     )
